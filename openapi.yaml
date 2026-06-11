@@ -1,0 +1,358 @@
+openapi: 3.1.0
+info:
+  title: Alicia OS v2 Action API
+  version: 0.1.0
+  description: Minimal REST API for Alicia OS v2 Custom GPT Actions.
+servers:
+  - url: https://your-public-alicia-api.example.com
+    description: Replace with your deployed Alicia OS Action API URL.
+paths:
+  /dashboard:
+    get:
+      operationId: getDashboard
+      summary: Read the current Alicia OS dashboard.
+      responses:
+        '200':
+          description: Dashboard records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+  /appointments/upcoming:
+    get:
+      operationId: getUpcomingAppointments
+      summary: Read upcoming appointments.
+      responses:
+        '200':
+          description: Upcoming appointments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+  /memories/active:
+    get:
+      operationId: getActiveMemories
+      summary: Read active memories.
+      responses:
+        '200':
+          description: Active memories.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+  /projects/active:
+    get:
+      operationId: getActiveProjects
+      summary: Read active projects.
+      responses:
+        '200':
+          description: Active projects.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+  /tasks/open:
+    get:
+      operationId: getOpenTasks
+      summary: Read open tasks.
+      responses:
+        '200':
+          description: Open tasks.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+  /memory:
+    post:
+      operationId: createMemory
+      summary: Create a memory.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemoryInput'
+      responses:
+        '200':
+          description: Created memory.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+  /memory/{id}:
+    patch:
+      operationId: updateMemory
+      summary: Update a memory.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemoryPatch'
+      responses:
+        '200':
+          description: Updated memory.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+    delete:
+      operationId: deleteMemory
+      summary: Delete a memory.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Deleted memory id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+  /task:
+    post:
+      operationId: createTask
+      summary: Create a task.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '200':
+          description: Created task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+  /task/{id}:
+    patch:
+      operationId: updateTask
+      summary: Update a task.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskPatch'
+      responses:
+        '200':
+          description: Updated task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+    delete:
+      operationId: deleteTask
+      summary: Delete a task.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Deleted task id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+  /appointment:
+    post:
+      operationId: createAppointment
+      summary: Create an appointment.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentInput'
+      responses:
+        '200':
+          description: Created appointment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+  /appointment/{id}:
+    patch:
+      operationId: updateAppointment
+      summary: Update an appointment.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentPatch'
+      responses:
+        '200':
+          description: Updated appointment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+    delete:
+      operationId: deleteAppointment
+      summary: Delete an appointment.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Deleted appointment id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    ListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    ObjectResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties: true
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+    MemoryInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+        priority:
+          type: string
+        status:
+          type: string
+        source:
+          type: string
+    MemoryPatch:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+        priority:
+          type: string
+        status:
+          type: string
+        source:
+          type: string
+        archived:
+          type: boolean
+    AppointmentInput:
+      type: object
+      required:
+        - title
+        - date
+      properties:
+        title:
+          type: string
+        date:
+          type: string
+          format: date
+          description: Alias for appointment_date.
+        appointment_date:
+          type: string
+          format: date
+        time:
+          type: string
+          description: Alias for appointment_time.
+        appointment_time:
+          type: string
+        status:
+          type: string
+        location:
+          type: string
+        notes:
+          type: string
+    AppointmentPatch:
+      type: object
+      properties:
+        title:
+          type: string
+        date:
+          type: string
+          format: date
+        appointment_date:
+          type: string
+          format: date
+        time:
+          type: string
+        appointment_time:
+          type: string
+        status:
+          type: string
+        location:
+          type: string
+        notes:
+          type: string
+        archived:
+          type: boolean
+    TaskInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        status:
+          type: string
+        priority:
+          type: string
+        due_date:
+          type: string
+          format: date
+        project_id:
+          type: string
+          format: uuid
+        notes:
+          type: string
+    TaskPatch:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: string
+        priority:
+          type: string
+        due_date:
+          type: string
+          format: date
+        project_id:
+          type: string
+          format: uuid
+        notes:
+          type: string
+        archived:
+          type: boolean
