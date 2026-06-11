@@ -115,6 +115,18 @@ app.get('/tasks/open', async (_req, res) => {
   );
 });
 
+app.get('/activity/recent', async (_req, res) => {
+  await sendQuery(
+    res,
+    supabase
+      .from('activity_log')
+      .select('*')
+      .eq('archived', false)
+      .order('created_at', { ascending: false })
+      .limit(50)
+  );
+});
+
 app.post('/memory', async (req, res) => {
   const values = cleanObject(req.body, [
     'title',
@@ -236,10 +248,41 @@ app.delete('/task/:id', async (req, res) => {
   );
 });
 
+app.post('/activity', async (req, res) => {
+  const values = cleanObject(req.body, [
+    'action',
+    'entity_type',
+    'entity_id',
+    'summary',
+    'metadata'
+  ]);
+
+  if (!values.summary) {
+    return res.status(400).json({ error: 'summary is required' });
+  }
+
+  if (!values.action) {
+    values.action = 'diary';
+  }
+
+  if (!values.entity_type) {
+    values.entity_type = 'diary';
+  }
+
+  await sendQuery(
+    res,
+    supabase.from('activity_log').insert(values).select('*').single()
+  );
+});
+
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
-app.listen(port, () => {
-  console.log(`Alicia OS Action API listening on port ${port}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Alicia OS Action API listening on port ${port}`);
+  });
+}
+
+export default app;
