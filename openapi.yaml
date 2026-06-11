@@ -4,8 +4,8 @@ info:
   version: 0.1.0
   description: Minimal REST API for Alicia OS v2 Custom GPT Actions.
 servers:
-  - url: https://your-public-alicia-api.example.com
-    description: Replace with your deployed Alicia OS Action API URL.
+  - url: https://alicia-os-v2-action-api.vercel.app
+    description: Alicia OS v2 Action API on Vercel.
 paths:
   /dashboard:
     get:
@@ -62,6 +62,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListResponse'
+  /activity/recent:
+    get:
+      operationId: getRecentActivity
+      summary: Read recent diary and activity log entries.
+      responses:
+        '200':
+          description: Recent activity entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
   /memory:
     post:
       operationId: createMemory
@@ -84,7 +95,12 @@ paths:
       operationId: updateMemory
       summary: Update a memory.
       parameters:
-        - $ref: '#/components/parameters/Id'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -102,7 +118,12 @@ paths:
       operationId: deleteMemory
       summary: Delete a memory.
       parameters:
-        - $ref: '#/components/parameters/Id'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: Deleted memory id.
@@ -132,7 +153,12 @@ paths:
       operationId: updateTask
       summary: Update a task.
       parameters:
-        - $ref: '#/components/parameters/Id'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -150,7 +176,12 @@ paths:
       operationId: deleteTask
       summary: Delete a task.
       parameters:
-        - $ref: '#/components/parameters/Id'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: Deleted task id.
@@ -180,7 +211,12 @@ paths:
       operationId: updateAppointment
       summary: Update an appointment.
       parameters:
-        - $ref: '#/components/parameters/Id'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -198,7 +234,12 @@ paths:
       operationId: deleteAppointment
       summary: Delete an appointment.
       parameters:
-        - $ref: '#/components/parameters/Id'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: Deleted appointment id.
@@ -206,15 +247,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ObjectResponse'
+  /activity:
+    post:
+      operationId: createActivity
+      summary: Create a diary or activity log entry.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityInput'
+      responses:
+        '200':
+          description: Created activity entry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponse'
 components:
-  parameters:
-    Id:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
   schemas:
     ListResponse:
       type: object
@@ -356,3 +406,22 @@ components:
           type: string
         archived:
           type: boolean
+    ActivityInput:
+      type: object
+      required:
+        - summary
+      properties:
+        action:
+          type: string
+          description: Usually diary, created, updated, archived, deleted, or note.
+        entity_type:
+          type: string
+          description: Usually diary, memory, task, appointment, project, person, or system.
+        entity_id:
+          type: string
+          format: uuid
+        summary:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
