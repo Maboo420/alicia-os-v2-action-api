@@ -1,0 +1,19 @@
+{
+  "name": "alicia-book",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "alicia-book": "./alicia-book.mjs"
+  },
+  "scripts": {
+    "alicia-book": "node alicia-book.mjs",
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "test:crud": "node alicia_os_v2_crud_test.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "express": "^4.19.2"
+  }
+}
